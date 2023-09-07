@@ -6,6 +6,7 @@ from threading import Event
 from PySide6.QtGui import QIcon
 from variables import WINDOW_ICON_PATH
 from styles import setupTheme
+from err_window import WindowErr
 ADDRESS = '0.0.0.0'
 USERNAME = 'root'
 PASSWORD = 'password'
@@ -145,12 +146,23 @@ if __name__ == '__main__':
     idapp = u"conexao_ssh_wms"
     ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(idapp)
     
-    ssh = paramiko.SSHClient()
-    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    ssh.connect(hostname=ADDRESS, username=USERNAME, password=PASSWORD)
+    try:
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(hostname=ADDRESS, username=USERNAME, password=PASSWORD)
+        app = QApplication(sys.argv)
+        setupTheme()
+        window = Window()
+        window.show()
+        sys.exit(app.exec()) # Loop da aplicação
     
-    app = QApplication(sys.argv)
-    setupTheme()
-    window = Window()
-    window.show()
-    sys.exit(app.exec()) # Loop da aplicação
+    except:
+        app2 = QApplication(sys.argv)
+        setupTheme()
+        window2 = WindowErr()
+        window2.show()
+        sys.exit(app2.exec())
+    
+        
+            
+    
